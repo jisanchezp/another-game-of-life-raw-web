@@ -12,3 +12,6 @@ The basic algorithmn solution implementation was inferred on paper first. No alg
     - Starvation: It has 1 or zero neighbors.
 - Lives: A 'living' cell continues living if it has 2 or 3 neighbors.
 
+## Cells grid
+
+The idea is to have an 'infinite' grid instead of a 2D array fixed grid.
