@@ -101,28 +101,41 @@ class Game {
 }
 
 let app = (function () {
-    let cells = [];
+    let cellMap = new Map();
+    let customCells = [
+        new Cell(15, 15),
+        new Cell(16, 14),
+        new Cell(17, 14),
+        new Cell(18, 13),
+        new Cell(18, 15)
+    ];
+    let glider = [
+        new Cell(1, 0),
+        new Cell(2, 1),
+        new Cell(0, 2),
+        new Cell(1, 2),
+        new Cell(2, 2)
+    ];
+    cellMap.set('custom', customCells);
+    cellMap.set('glider', glider);
     let game = null;
 
     function start() {
         if (game !== null) return;
 
         console.log("Starting the game...");
-        cells.push(new Cell(15, 15));
-        cells.push(new Cell(16, 14));
-        cells.push(new Cell(17, 14));
-        cells.push(new Cell(18, 13));
-        cells.push(new Cell(18, 15));   
-
+        let cells = [];
+        cells.push(...cellMap.get('glider'));
+        cells.push(...cellMap.get('custom'));
         game = new Game(cells);
         game.start();
-    }
+    }    
 
     function stop() {
         if (game === null) return;
         console.log("Stopping the game..."); 
         game.stop();
-        cells = [];        
+        game = null;
         console.log("Game stopped successfully.");
     }
 
