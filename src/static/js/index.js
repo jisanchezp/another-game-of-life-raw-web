@@ -42,7 +42,7 @@ class Game {
 
     async start() {
         while (this.isRunning) {
-            this.tick();
+            this.#tick();
             await new Promise(resolve => setTimeout(resolve, 500));
         }
     }
@@ -53,7 +53,7 @@ class Game {
         this.canvas.clearCanvas();
     }
     
-    tick() {
+    #tick() {
         if (!this.isRunning) return;
         this.#drawCells(this.cells);
         this.#calculateNextGeneration();
