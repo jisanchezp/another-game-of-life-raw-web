@@ -36,21 +36,34 @@ class Cell {
 class Game {
     constructor(cells) {
         this.cells = cells;
+        this.isRunning = true;
     }
 
+    async start() {
+        while (this.isRunning) {
+            this.tick();
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+    }
+
+    stop (){
+        this.isRunning = false;
+    }
+    
     tick() {
-        this.drawCells(this.cells);
-        this.calculateNextGeneration();
+        if (!this.isRunning) return;
+        this.#drawCells(this.cells);
+        this.#calculateNextGeneration();
     }
 
-    drawCells(cells) {
+    #drawCells(cells) {
         clearCanvas();
         for (let cell of cells) {
             cell.draw();
         }
     }
 
-    calculateNextGeneration() {
+    #calculateNextGeneration() {
         let newCells = [];
         let cellMap = new Map();
         
@@ -83,15 +96,7 @@ class Game {
 let app = (function () {
     let isRunning = false;
     let cells = [];
-
-    async function loop(game) {
-        while (isRunning) {
-            await new Promise(resolve => setTimeout(() => {
-                game.tick();
-                resolve();
-            }, 1000));
-        }
-    }
+    let game = null;
 
     function start() {
         if (isRunning) return;
@@ -103,15 +108,14 @@ let app = (function () {
         cells.push(new Cell(18, 13));
         cells.push(new Cell(18, 15));   
 
-        let game = new Game(cells);
-        isRunning = true;
-
-        loop(game);
+        game = new Game(cells);
+        game.start();
     }
 
     function stop() {
-        if (!isRunning) return;
+        if (game === null) return;
         console.log("Stopping the game..."); 
+        game.stop();
         cells = [];
         isRunning = false;
         console.log("Cleaning canvas...");
