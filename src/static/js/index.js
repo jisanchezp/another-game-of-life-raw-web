@@ -54,7 +54,7 @@ class Game {
     async start() {
         while (this.isRunning) {
             this.#tick();
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
     }
 
