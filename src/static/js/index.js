@@ -1,13 +1,17 @@
-let canvas = document.getElementById('gameCanvas');
-let ctx = canvas.getContext('2d');
+class GameCanvas {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+    }
 
-function drawRectangle(x, y, width, height, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(x, y, width, height);
-}
+    drawRectangle(x, y, width, height, color) {
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(x, y, width, height);
+    }
 
-function clearCanvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    clearCanvas() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
 }
 
 class Cell {
@@ -15,10 +19,6 @@ class Cell {
         this.x = x;
         this.y = y;
         this.size = size;
-    }
-
-    draw() {
-        drawRectangle(this.x * this.size, this.y * this.size, this.size, this.size, 'black');
     }
 
     getNeighbors() {
@@ -37,6 +37,7 @@ class Game {
     constructor(cells) {
         this.cells = cells;
         this.isRunning = true;
+        this.canvas = new GameCanvas('gameCanvas');
     }
 
     async start() {
@@ -48,6 +49,8 @@ class Game {
 
     stop (){
         this.isRunning = false;
+        console.log("Cleaning canvas...");
+        this.canvas.clearCanvas();
     }
     
     tick() {
@@ -56,10 +59,14 @@ class Game {
         this.#calculateNextGeneration();
     }
 
+    #drawCell(cell) {
+        this.canvas.drawRectangle(cell.x * cell.size, cell.y * cell.size, cell.size, cell.size, 'black');
+    }
+
     #drawCells(cells) {
-        clearCanvas();
+        this.canvas.clearCanvas();
         for (let cell of cells) {
-            cell.draw();
+            this.#drawCell(cell);
         }
     }
 
@@ -94,14 +101,13 @@ class Game {
 }
 
 let app = (function () {
-    let isRunning = false;
     let cells = [];
     let game = null;
 
     function start() {
-        if (isRunning) return;
+        if (game !== null) return;
+
         console.log("Starting the game...");
-        isRunning = true;
         cells.push(new Cell(15, 15));
         cells.push(new Cell(16, 14));
         cells.push(new Cell(17, 14));
@@ -116,10 +122,7 @@ let app = (function () {
         if (game === null) return;
         console.log("Stopping the game..."); 
         game.stop();
-        cells = [];
-        isRunning = false;
-        console.log("Cleaning canvas...");
-        clearCanvas();
+        cells = [];        
         console.log("Game stopped successfully.");
     }
 
