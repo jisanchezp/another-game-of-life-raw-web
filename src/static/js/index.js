@@ -2,11 +2,20 @@ class GameCanvas {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
+        this.ctx.font = "50px Arial";
+        this.ctx.fillStyle = "purple";
+        this.ctx.fillText("Hello World",10,80);
     }
 
     drawRectangle(x, y, width, height, color) {
         this.ctx.fillStyle = color;
         this.ctx.fillRect(x, y, width, height);
+    }
+
+    drawText(text, x, y, font = '16px Console', color = 'black') {
+        this.ctx.font = font;
+        this.ctx.fillStyle = color;
+        this.ctx.fillText(text, x, y);
     }
 
     clearCanvas() {
@@ -38,6 +47,8 @@ class Game {
         this.cells = cells;
         this.isRunning = true;
         this.canvas = new GameCanvas('gameCanvas');
+        this.generation = 0;
+        this.population = this.cells.length;
     }
 
     async start() {
@@ -55,8 +66,17 @@ class Game {
     
     #tick() {
         if (!this.isRunning) return;
+        this.generation++;
+        this.population = this.cells.length;
+        this.canvas.clearCanvas();
+        this.#drawStats();
         this.#drawCells(this.cells);
         this.#calculateNextGeneration();
+    }
+
+    #drawStats() {
+        this.canvas.drawText(`Generation: ${this.generation}`, 380, 15);
+        this.canvas.drawText(`Population: ${this.population}`, 380, 30);
     }
 
     #drawCell(cell) {
@@ -64,7 +84,6 @@ class Game {
     }
 
     #drawCells(cells) {
-        this.canvas.clearCanvas();
         for (let cell of cells) {
             this.#drawCell(cell);
         }
@@ -96,7 +115,7 @@ class Game {
             }
         }
 
-        this.cells = newCells;
+        this.cells = newCells;        
     }
 }
 
