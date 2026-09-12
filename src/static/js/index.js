@@ -150,6 +150,14 @@ let app = (function () {
         game.start();
     }    
 
+    function restart() {
+        if (game !== null) {            
+            stop();
+        }
+        console.log("Restarting the game...");
+        start();
+    }
+
     function stop() {
         if (game === null) return;
         console.log("Stopping the game..."); 
@@ -160,6 +168,7 @@ let app = (function () {
 
     return {
         start,
+        restart,
         stop
     };
 })();
